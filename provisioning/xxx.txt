@@ -1,0 +1,16 @@
+ansible all -m ping -i hosts.yml
+
+1.make site
+2.make authorize or make generate-deploy-key and make authorize-deploy in order to put ssh in jenkins
+3.make docker-login
+Registry: registry.demo-auction.webexample.pro
+Username: registry
+Password: password
+
+
+
+//33
+
+development
+REGISTRY=localhost:5000 IMAGE_TAG=1 make build
+docker push localhost:5000/auction-api-php-cli:1

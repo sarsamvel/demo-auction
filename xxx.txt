@@ -1,0 +1,183 @@
+//snippet
+
+git checkout --orphan clean-branch
+git remote add origin2 https://github.com/sarsamvel/demo-auction.git
+git add . && git commit -m "initial commit to new repo"
+git push origin2 clean-branch:master
+
+REGISTRY=localhost:5000  IMAGE_TAG=1 make build
+docker push localhost:5000/auction-api-php-cli:1
+
+REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=1 make build
+docker login -u registry -p password registry.demo-auction.webexample.pro
+REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=1 make push
+
+
+////
+docker-compose run --rm api-php-cli php -v  // php version
+
+docker-compose run --rm api-php-cli composer  // composer install
+docker-compose run --rm api-php-cli composer create-project slim/slim-skeleton slim  // install slim
+
+sudo rm -rf api/slim
+
+// 4
+docker-compose up -d,
+docker-compose down
+docker-compose down --remove-orphans
+
+COMPOSE_PROJECT_NAME=site ocker-compose up -d, also we can create .env file in the root project and add COMPOSE_PROJECT_NAME=site there
+in .env file we can write also other parameters for instance PORT=8080 and in docker-compose.yml use like this ${PORT}
+
+//5
+HOST=deploy@{server-ip-addres} PORT=22  REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=master-1 BUILD_NUMBER=1 make deploy
+
+REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=1 make build
+
+
+// 6
+docker-compose run --rm api-php-cli php -v
+docker-compose run --rm api-php-cli composer
+docker-compose run --rm api-php-cli composer create-project slim/slim-skeleton slim
+
+
+docker-compose run --rm api-php-cli composer init
+docker-compose run --rm api-php-cli composer install
+docker-compose run --rm api-php-cli composer require slim/slim slim/psr7
+docker-compose run --rm api-php-cli composer dump-autoload -o
+docker-compose run --rm api-php-cli composer require ext-json
+docker-compose run --rm api-php-cli php bin/app.php      // console command
+docker-compose run --rm api-php-cli php bin/app.php hello
+docker-compose run --rm api-php-cli composer app hello
+
+// 8
+docker-compose exec api-php-fpm ping host.docker.internal // for fpm xdebug
+docker-compose exec api-php-fpm cat /etc/hosts
+docker-compose run --rm api-php-cli ip route
+docker-compose run --rm api-php-cli ip route | awk 'NR==1 {print $3}'
+
+xdebug settings has been renamed
+xdebug.mode=debug
+xdebug.client_host=host.docker.internal
+xdebug.client_port=9000
+
+
+
+// 9
+docker-compose run --rm api-php-cli php -l bin/app.php  //linter
+
+docker-compose run --rm api-php-cli composer cs-check  // code sniffer   check code
+docker-compose run --rm api-php-cli composer cs-fix    // code sniffer   fix code
+
+docker-compose run --rm api-php-cli  ./vendor/bin/psalm --init src 1   // psalm  init src (1-8)
+
+// 10
+docker-compose run --rm api-php-cli composer require --dev phpunit/phpunit
+docker-compose run --rm api-php-cli vendor/bin/phpunit --generate-configuration // generate phpunit file
+docker-compose run --rm api-php-cli vendor/bin/phpunit test-result
+docker-compose run --rm api-php-cli vendor/bin/phpunit composer test -- --filter=Functional
+docker-compose run --rm api-php-cli vendor/bin/phpunit --help
+
+//20
+
+docker-compose run --rm api-php-cli composer app //console commands
+
+//21
+
+docker-compose run --rm api-php-cli composer app orm:validate-schema
+docker-compose run --rm api-php-cli composer app orm:validate-schema -- --dump-sql
+
+//22
+
+docker-compose run --rm api-php-cli composer app  orm:schema-tool:drop -- --force
+docker-compose run --rm api-php-cli composer app migrations:diff
+sudo chown $USER:$USER api/src -R
+docker-compose run --rm api-php-cli composer app migrations:migrate
+docker-compose run --rm api-php-cli composer app fixtures:load
+
+in php alpine versions to use wait-for-it.sh  scripts need to add  bash coreutils (run apk )
+if you do not use alpine there is no reason to add bash coreutils
+
+// 23
+docker-compose run --rm api-php-cli composer app mailer:check
+
+// 24
+docker-compose logs
+docker-compose logs api-php-fpm show logs for specific image
+docker-compose logs -f  api-php-fpm
+
+
+// 29
+docker-compose run --rm frontend-node-cli npx create-react-app react-app
+docker-compose run --rm frontend-node-cli yarn build
+docker-compose up --build -d
+
+// 30
+docker-compose run --rm frontend-node-cli yarn test
+docker-compose run --rm frontend-node-cli yarn test --watchAll=false
+docker-compose run --rm frontend-node-cli npx eslint --init
+docker-compose run --rm frontend-node-cli yarn eslint  // composer script
+docker-compose run --rm frontend-node-cli yarn eslint-fix  // composer script
+
+//31
+docker-compose run --rm cucumber-node-cli yarn install
+test-coverage: api-test-coverage removed from make file
+test-unit-coverage: api-test-unit-coverage removed from make file
+test-functional-coverage: api-test-functional-coverage api-fixtures removed from make file
+ we can install cucumber html reporter
+
+
+//33
+production
+REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=1 make build
+docker login -u registry -p password registry.demo-auction.webexample.pro
+REGISTRY=registry.demo-auction.webexample.pro IMAGE_TAG=1 make push
+
+//34
+SENTRY_DSN=0 docker-compose run --rm api-php-cli env -> this command will get all env variables from api-php-cli image
+sudo swapon --show // swap file ubuntu command  https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04
+we will use swap file only for when it is absolutely necessary
+
+//37
+
+curl -u ElisDN -X POST -F "jenkinsfile=<Jenkinsfile" https://jenkins.demo-auction.webexample.pro/pipleline-model-converter/validate
+// validate jenkinsfile you should send post request to jenkins
+USER={jenkins_user} HOST=https://jenkins.demo-auction.webexample.pro make validate-jenkins (user -> Admin pass->123456)
+
+step 1 create job write an item name and choose multibranch pipeline(because it will be possible to use different branches for example master and develop )
+step 2 add source github
+step 3 copy https url from your github and past in the form Repository HTTPS URL
+step 4 we must write credentials and there are two options ( auction and jenkins)
+auction -> mean that we are writing credentials for specific project
+jenkins -> mean that we are going to create credentials global
+ but whereas wa will create only one project in jenkins we will choose option jenkins to create global
+step  5 fill the form , in the field password you must generate personal access token from your github and past there, ID and description let it be GitHub
+step 6 select added option
+step 7 behaviors add Prune stale remote-tracking branches (it is for branches rightness )
+step 8 click Periodically if not otherwise run and set interval 1 minute
+step 9 Max # of old items to keep -> 20
+step 10 save
+
+//41
+docker node ls
+
+ssh deploy@45.79.86.209 -p 517
+in order to down latest site
+ls
+cd site_{image_tag}
+docker-compose down
+
+//42 docker-compose up -d gateway
+docker-compose logs gateway
+
+docker-compose up -d api
+docker-compose exec api ls
+docker-compose exec api curl --fail http://127.0.0.1 to check nginx works in this container
+docker-compose exec api curl --fail http://127.0.0.1/health
+docker ps
+
+https://hub.docker.com/r/unocha/alpine-base-php-fpm/dockerfile
+ermin.ru/post/22
+
+docker service ls
+docker service ps auciton_api-postgres 
